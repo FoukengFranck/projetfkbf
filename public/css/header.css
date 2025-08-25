@@ -1,0 +1,40 @@
+.container-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid #eee;
+    background: white;
+}
+
+.container-header .logo {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.container-header .logo .logo-img {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.btn {
+    background: #66e3ffac;
+    color: rgb(0, 0, 0);
+    font-size: 1.5rem;
+    margin-right: 10px;
+    height: 40px;
+    width: 140px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background: #0b5ed7;
+}
