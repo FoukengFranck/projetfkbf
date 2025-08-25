@@ -1,6 +1,10 @@
 @include('components.header')
 
 <x-guest-layout>
+
+    @push('scripts')
+        <script src="{{ asset('js/inscription-entreprise.js') }}" defer></script>
+    @endpush
     <div class="mb-6 text-center">
         <h1 class="text-2xl font-bold">Inscription Entreprise</h1>
         <p class="text-gray-600">Créez votre compte et vos informations entreprise</p>

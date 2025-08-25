@@ -143,6 +143,11 @@
 @include('components.header')
 
 <x-guest-layout>
+
+    @push('scripts')
+        <script src="{{ asset('js/inscription-candidat.js') }}" defer></script>
+    @endpush
+
     <div class="mb-6 text-center">
         <h1 class="text-3xl font-bold text-blue-700">Inscription Candidats / Freelance</h1>
         <p class="text-gray-600">Créez votre compte pour rejoindre la communauté professionnelle du Cameroun</p>
@@ -283,7 +288,7 @@
         </div>
     </div>
 
-    <script src="{{ asset('js/inscription-candidat.js') }}"></script>
+    
 
     {{-- <style>
         /* Masquer l'input file par défaut */
@@ -303,7 +308,7 @@
         }
     </style> --}}
 
-    {{-- <script>
+    <script>
         function candidatForm() {
             return {
                 skills: @json(old('competences', [])),
@@ -321,6 +326,6 @@
                 }
             }
         }
-    </script> --}}
+    </script>
 </x-guest-layout>
 
