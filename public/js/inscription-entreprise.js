@@ -82,6 +82,41 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
+
+    const passwordInput = document.getElementById("password");
+    const requirements = {
+        uppercase: document.querySelector(".password-req-uppercase"),
+        lowercase: document.querySelector(".password-req-lowercase"),
+        number: document.querySelector(".password-req-number"),
+        symbol: document.querySelector(".password-req-symbol"),
+    };
+
+    function validatePassword() {
+        const pwd = passwordInput.value;
+        const checks = {
+            uppercase: /[A-Z]/.test(pwd),
+            lowercase: /[a-z]/.test(pwd),
+            number: /\d/.test(pwd),
+            symbol: /[^a-zA-Z0-9]/.test(pwd),
+        };
+
+        // Met à jour les couleurs avec Tailwind
+        Object.keys(checks).forEach((key) => {
+            if (requirements[key]) {
+                requirements[key].classList.toggle(
+                    "text-gray-500",
+                    !checks[key]
+                );
+                requirements[key].classList.toggle(
+                    "text-green-600",
+                    checks[key]
+                );
+            }
+        });
+    }
+
+    passwordInput?.addEventListener("input", validatePassword);
+
     // Initialisation
     render();
 });

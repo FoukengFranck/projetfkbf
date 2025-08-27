@@ -470,7 +470,7 @@
                 </div>
             </div>
 
-            {{-- Étape 5 : Validation --}}
+            {{-- Étape 5 : Sécurité --}}
             <div class="step hidden">
                 <div class="bg-white rounded-lg shadow-md p-6 mb-6">
                     <div class="flex items-center mb-4">
@@ -482,7 +482,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium mb-1">Mot de passe <span class="text-red-500">*</span></label>
-                            <input type="password" name="password"
+                            <input type="password" name="password" id="password"
                                    class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-500 @enderror" required>
                             @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
                         </div>
@@ -492,6 +492,15 @@
                             <input type="password" name="password_confirmation"
                                    class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 @error('password_confirmation') border-red-500 @enderror" required>
                             @error('password_confirmation') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="col-span-full mt-2">
+                            <div class="password-requirements flex flex-wrap gap-2 text-sm">
+                                <span class="password-req-uppercase text-gray-500"> Majuscule</span>
+                                <span class="password-req-lowercase text-gray-500"> Minuscule</span>
+                                <span class="password-req-number text-gray-500"> Chiffre</span>
+                                <span class="password-req-symbol text-gray-500"> Symbole (!@#$%)</span>
+                            </div>
                         </div>
                     </div>
                 </div>
