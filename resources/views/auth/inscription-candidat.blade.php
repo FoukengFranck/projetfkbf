@@ -163,7 +163,7 @@
         </div>
     @endif
 
-    <div class="bg-white rounded-lg shadow-md p-6 md:p-8 border border-gray-200 mx-[300px]">
+    <div class="bg-white rounded-lg shadow-md p-6 md:p-8 border border-gray-200 mx-[300px] my-[10px]">
         <form x-data="candidatForm()" x-init="init()" method="POST" action="{{ route('register.candidat.store') }}" enctype="multipart/form-data" class="space-y-6">
             @csrf
 
@@ -172,7 +172,10 @@
                     <label class="block text-sm font-medium mb-1">
                         Nom Complet <span class="text-red-500">*</span>
                     </label>
-                    <input name="name" value="{{ old('name') }}" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="Foulefack jacque william" required>
+                    <input name="name" value="{{ old('name') }}" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" 
+                        placeholder="Foulefack jacque william" required
+                        pattern="^[a-zA-ZÀ-ÿ\s]{12}$"
+                    >
                 </div>
 
                 <div>
@@ -275,8 +278,8 @@
                 </div>
             </div>
             
-            <div class="pt-4 mt-8 border-t border-gray-200">
-                <button class="w-full bg-green-600 text-white font-semibold py-3 rounded hover:bg-green-700 transition-colors">
+            <div class="pt-4 mt-8 border-t border-gray-300">
+                <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-[9px] px-5 rounded-lg mt-2 mx-auto block w-[200px] sm:w-auto">
                     S'inscrire
                 </button>
             </div>
