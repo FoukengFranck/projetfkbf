@@ -225,16 +225,30 @@
                 </div>
             </div>
 
+
             <div class="mt-6">
                 <label class="block text-sm font-medium mb-1">CV</label>
-                <div id="cv-dropzone" 
-                    class="border-2 border-dashed rounded-md p-10 text-center text-gray-500 cursor-pointer my-2"
-                    @click="$el.querySelector('input[type=file]').click()"
-                >
+                <div id="cv-dropzone"
+                    class="border-2 border-dashed rounded-md p-10 text-center text-gray-500 cursor-pointer my-2 hover:bg-gray-100 transition">
+                    Cliquez ou glissez-déposez votre CV ici
+                </div>
+
+                <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" class="hidden">
+
+                <p class="mt-2 text-sm text-gray-600" id="cv-filename"></p>
+            </div>
+
+
+            {{-- <div class="mt-6">
+                <label class="block text-sm font-medium mb-1">CV</label>
+                <div id="cv-dropzone"
+                    class="border-2 border-dashed rounded-md p-10 text-center text-gray-500 cursor-pointer my-2">
                     Cliquez pour télécharger votre CV
                 </div>
-                <input type="file" name="cv" accept=".pdf,.doc,.docx" class="hidden">
-            </div>
+                <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" class="hidden">
+                <p class="mt-2 text-sm text-green-600 font-extrabold" id="cv-filename"></p>
+            </div> --}}
+
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                 <div>
@@ -267,7 +281,7 @@
                     <label class="block text-sm font-medium mb-1">
                         Mot de passe <span class="text-red-500">*</span>
                     </label>
-                    <input type="password" name="password" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                    <input id="password" type="password" name="password" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" required>
                 </div>
 
                 <div>
@@ -275,6 +289,15 @@
                         Confirmation Mot de passe <span class="text-red-500">*</span>
                     </label>
                     <input type="password" name="password_confirmation" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                </div>
+
+                <div class="col-span-full mt-2">
+                    <div class="password-requirements flex flex-wrap gap-2 text-sm">
+                        <span class="password-req-uppercase text-gray-500"> Majuscule</span>
+                        <span class="password-req-lowercase text-gray-500"> Minuscule</span>
+                        <span class="password-req-number text-gray-500"> Chiffre</span>
+                        <span class="password-req-symbol text-gray-500"> Symbole (!@#$%)</span>
+                    </div>
                 </div>
             </div>
             
@@ -286,8 +309,8 @@
         </form>
 
         <div class="mt-6 text-center">
-            <p>Vous êtes Entreprise ? <a href="#" class="text-blue-600 font-medium">Inscription Entreprise</a></p>
-            <p>Déjà inscrit ? <a href="#" class="text-blue-600 font-medium">Se connecter</a></p>
+            <p>Vous êtes Entreprise ? <a href="{{ route('register.entreprise.create') }}" class="text-blue-600 font-medium">Inscription Entreprise</a></p>
+            <p>Déjà inscrit ? <a href="{{ route('login') }}" class="text-blue-600 font-medium">Se connecter</a></p>
         </div>
     </div>
 

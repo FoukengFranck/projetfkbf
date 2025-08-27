@@ -117,6 +117,57 @@ document.addEventListener("DOMContentLoaded", function () {
 
     passwordInput?.addEventListener("input", validatePassword);
 
+    document.getElementById('niu').addEventListener('input', function () {
+        let value = this.value.trim();
+        let error = document.getElementById('niu-error');
+
+        if (value.length === 14) {
+            let first = value.charAt(0).toUpperCase();
+            let rest = value.slice(1);
+
+            if (first === "M" && /^\d+$/.test(rest)) {
+                error.classList.add("hidden");
+            } else {
+                error.textContent =
+                    "Le NIU est invalide. Il doit commencer par 'M' suivi de 13 chiffres.";
+
+                error.classList.remove("hidden");
+            }
+        } else {
+            error.textContent = "le NIU doit contenir exactement 14 caractères";
+
+            error.classList.remove("hidden");
+        }
+    });
+
+
+    function toggleOtherField(select) {
+        const otherField = document.getElementById("other-field");
+        if (!otherField) return;
+
+        if (select.value === "Autre") {
+            otherField.style.display = "block";
+            document.getElementById("secteur_personnalise")?.focus();
+        } else {
+            otherField.style.display = "none";
+        }
+    }
+
+    // Au chargement de la page
+    document.addEventListener("DOMContentLoaded", function () {
+        const select = document.getElementById("secteur_activite");
+        if (!select) return;
+
+        // Vérifie si old('secteur_activite') = Autre
+        toggleOtherField(select);
+
+        // Ajoute l’écouteur de changement
+        select.addEventListener("change", function () {
+            toggleOtherField(this);
+        });
+    });
+
+
     // Initialisation
     render();
 });

@@ -258,33 +258,54 @@
 
                         <div>
                             <label class="block text-sm font-medium mb-1">NUI (Numéro d'Identification Unique) <span class="text-red-500">*</span></label>
-                            <input name="identifiant_unique" value="{{ old('identifiant_unique') }}"
+                            <input type="text" id="niu" name="identifiant_unique" value="{{ old('identifiant_unique') }}"
                                    class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 @error('identifiant_unique') border-red-500 @enderror"
-                                   placeholder="P987654321DEF" required pattern="[A-Za-z0-9]{13}">
+                                   placeholder="P9876543216734" required pattern="[A-Za-z0-9]{14}">
                             @error('identifiant_unique')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
-                            <p class="text-xs text-gray-500 mt-1">13 caractères alphanumériques</p>
+                            <p class="text-xs text-gray-500 mt-1">14 caractères alphanumériques</p>
+                            <p id="niu-error" class="text-red-500 text-sm hidden"></p>
                         </div>
 
-                        <div class="md:col-span-2">
+
+                        <div class="md:col-span-2" x-data="{ selected: '{{ old('secteur_activite') }}' }">
                             <label class="block text-sm font-medium mb-1">Secteur d'activité <span class="text-red-500">*</span></label>
                             <select name="secteur_activite"
+                                    id="secteur_activite"
+                                    x-model="selected"
                                     class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 @error('secteur_activite') border-red-500 @enderror"
                                     required>
                                 <option value="">-- Sélectionnez un secteur --</option>
-                                <option>Informatique</option>
-                                <option>Commerce</option>
-                                <option>Banque</option>
-                                <option>BTP</option>
-                                <option>Agroalimentaire</option>
-                                <option>Énergie</option>
-                                <option>Autre</option>
+                                <option value="Informatique">Informatique</option>
+                                <option value="Commerce">Commerce</option>
+                                <option value="Banque">Banque</option>
+                                <option value="BTP">BTP</option>
+                                <option value="Agroalimentaire">Agroalimentaire</option>
+                                <option value="Énergie">Énergie</option>
+                                <option value="Autre">Autre</option>
                             </select>
                             @error('secteur_activite')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
+
+                            <!-- Champ personnalisé si "Autre" -->
+                            <div id="other-field" x-show="selected === 'Autre'" class="mt-4" style="display: none;">
+                                <label for="secteur_personnalise">Précisez la catégorie</label>
+                                <input
+                                    id="secteur_personnalise"
+                                    name="secteur_personnalise"
+                                    value="{{ old('secteur_personnalise') }}"
+                                    class="mt-1 block w-full border rounded-md px-3 py-2"
+                                    placeholder="Entrez votre catégorie"
+                                />
+                                <p class="mt-1 text-sm text-gray-500">Veuillez préciser la catégorie souhaitée.</p>
+                                @error('secteur_personnalise')
+                                    <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
                         </div>
+
                     </div>
                 </div>
 
@@ -517,7 +538,7 @@
     </div>
 
     <div class="text-center mt-8">
-        <p class="text-sm">
+        <p class="text-sm my-9">
             Vous êtes candidat ?
             <a href="{{ route('register.candidat.create') }}" class="text-blue-600 font-medium">Inscription candidat</a>
             &ensp;·&ensp; Déjà inscrit ?
