@@ -144,6 +144,12 @@
 
 <x-guest-layout>
 
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
+          referrerpolicy="no-referrer" 
+        />
+
     @push('scripts')
         <script src="{{ asset('js/inscription-candidat.js') }}" defer></script>
     @endpush
@@ -276,19 +282,80 @@
                 </div>
             </div>
 
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                <div>
+                <!-- Mot de passe -->
+                <div class="relative">
                     <label class="block text-sm font-medium mb-1">
                         Mot de passe <span class="text-red-500">*</span>
                     </label>
-                    <input id="password" type="password" name="password" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                    <input id="password"
+                        type="password"
+                        name="password"
+                        class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    >
+        <!-- Icône FontAwesome -->
+                    <span id="togglePassword" class="absolute right-3  bottom-1/2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600">
+                        <i class="fa-solid fa-eye text-2xl"></i>
+                    </span>
                 </div>
 
-                <div>
+                <!-- Confirmation Mot de passe -->
+                <div class="relative">
+                    <label class="block text-sm font-medium mb-1">
+            Confirmation Mot de passe <span class="text-red-500">*</span>
+                    </label>
+                    <input id="password_confirmation"
+                        type="password"
+                        name="password_confirmation"
+                        class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500"
+                        required
+                    >
+                    <!-- Icône FontAwesome -->
+                    <span id="togglePasswordConfirm" class="absolute right-3 bottom-1/2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600">
+                        <i class="fa-solid fa-eye text-2xl"></i>
+                    </span>
+                </div>
+
+                <!-- Conditions du mot de passe -->
+                <div class="col-span-full mt-2">
+                    <div class="password-requirements flex flex-wrap gap-2 text-sm">
+                        <span class="password-req-uppercase text-gray-500"> Majuscule</span>
+                        <span class="password-req-lowercase text-gray-500"> Minuscule</span>
+                        <span class="password-req-number text-gray-500"> Chiffre</span>
+                        <span class="password-req-symbol text-gray-500"> Symbole (!@#$%)</span>
+                    </div>
+                </div>
+            </div>
+
+
+            {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                <div class="relative">
+                    <label class="block text-sm font-medium mb-1">
+                        Mot de passe <span class="text-red-500">*</span>
+                    </label>
+                    <input id="password" 
+                        type="password" 
+                        name="password" 
+                        class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" 
+                        required
+                    >
+                    <img src="{{ asset('images/eye-close.png') }}" alt="" id="eye" onclick="changer()" 
+                    class="absolute right-3 bottom-[0.9px]  transform -translate-y-1/2 h-[25px] cursor-pointer">
+                </div>
+
+                <div class="relative">
                     <label class="block text-sm font-medium mb-1">
                         Confirmation Mot de passe <span class="text-red-500">*</span>
                     </label>
-                    <input type="password" name="password_confirmation" class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" required>
+                    <input type="password" 
+                        name="password_confirmation" 
+                        class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500" 
+                        required
+                    >
+                    <img src="{{ asset('images/eye-close.png') }}" alt="" id="eye" onclick="changer()" 
+                    class="absolute right-3 bottom-[0.9px]  transform -translate-y-1/2 h-[25px] cursor-pointer">
                 </div>
 
                 <div class="col-span-full mt-2">
@@ -299,7 +366,7 @@
                         <span class="password-req-symbol text-gray-500"> Symbole (!@#$%)</span>
                     </div>
                 </div>
-            </div>
+            </div> --}}
             
             <div class="pt-4 mt-8 border-t border-gray-300">
                 <button class="bg-green-500 hover:bg-green-700 text-white font-bold py-[9px] px-5 rounded-lg mt-2 mx-auto block w-[200px] sm:w-auto">

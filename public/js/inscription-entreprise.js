@@ -117,28 +117,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     passwordInput?.addEventListener("input", validatePassword);
 
-    document.getElementById('niu').addEventListener('input', function () {
-        let value = this.value.trim();
-        let error = document.getElementById('niu-error');
+    
 
-        if (value.length === 14) {
-            let first = value.charAt(0).toUpperCase();
-            let rest = value.slice(1);
-
-            if (first === "M" && /^\d+$/.test(rest)) {
-                error.classList.add("hidden");
-            } else {
-                error.textContent =
-                    "Le NIU est invalide. Il doit commencer par 'M' suivi de 13 chiffres.";
-
-                error.classList.remove("hidden");
-            }
-        } else {
-            error.textContent = "le NIU doit contenir exactement 14 caractères";
-
-            error.classList.remove("hidden");
-        }
-    });
 
 
     function toggleOtherField(select) {
@@ -170,4 +150,30 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Initialisation
     render();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    function setupPasswordToggle(inputId, toggleId) {
+        const input = document.getElementById(inputId);
+        const toggle = document.getElementById(toggleId);
+
+        if (!input || !toggle) return;
+
+        toggle.addEventListener("click", function () {
+            const icon = toggle.querySelector("i");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        });
+    }
+
+    setupPasswordToggle("password", "togglePassword");
+    setupPasswordToggle("password_confirmation", "togglePasswordConfirm");
 });

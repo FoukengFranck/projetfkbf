@@ -501,18 +501,31 @@
                     <p class="text-gray-600 mb-6">Vérifiez vos informations avant de soumettre</p>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
+                        <div class="relative">
                             <label class="block text-sm font-medium mb-1">Mot de passe <span class="text-red-500">*</span></label>
-                            <input type="password" name="password" id="password"
+                            <input  id="password" 
+                                    type="password" 
+                                    name="password"
                                    class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-500 @enderror" required>
                             @error('password') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+
+                            <span id="togglePassword" class="absolute right-3  bottom-1/2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600">
+                                <i class="fa-solid fa-eye text-2xl"></i>
+                            </span>
+   
                         </div>
 
-                        <div>
+                        <div class="relative">
                             <label class="block text-sm font-medium mb-1">Confirmation du mot de passe <span class="text-red-500">*</span></label>
-                            <input type="password" name="password_confirmation"
+                            <input type="password" 
+                                    id="password_confirmation"
+                                    name="password_confirmation"
                                    class="mt-1 w-full px-3 py-2 border rounded-md focus:ring-blue-500 focus:border-blue-500 @error('password_confirmation') border-red-500 @enderror" required>
                             @error('password_confirmation') <p class="mt-1 text-sm text-red-600">{{ $message }}</p> @enderror
+
+                            <span id="togglePasswordConfirm" class="absolute right-3  bottom-1/2 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-600">
+                                <i class="fa-solid fa-eye text-2xl"></i>
+                            </span>
                         </div>
 
                         <div class="col-span-full mt-2">

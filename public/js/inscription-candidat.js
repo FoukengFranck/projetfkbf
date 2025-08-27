@@ -1,28 +1,3 @@
-// document.addEventListener("DOMContentLoaded", function () {
-//     const drop = document.getElementById("cv-dropzone");
-//     const file = document.getElementById("cv");
-//     const fileName = document.getElementById("cv-filename");
-
-//     if (!drop || !file) {
-//         console.error("Impossible de trouver cv-dropzone ou cv");
-//         return;
-//     }
-
-//     drop.addEventListener("click", function () {
-//         console.log("Zone cliquée ✅"); // DEBUG
-//         file.click();
-//     });
-
-//     file.addEventListener("change", function () {
-//         if (file.files && file.files[0]) {
-//             fileName.textContent = `Fichier sélectionné : ${file.files[0].name}`;
-//         } else {
-//             fileName.textContent = "";
-//         }
-//     });
-// });
-
-
 document.addEventListener("DOMContentLoaded", function () {
     const drop = document.getElementById("cv-dropzone");
     const file = document.getElementById("cv");
@@ -96,3 +71,30 @@ function validatePassword() {
 }
 
 passwordInput?.addEventListener("input", validatePassword);
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    function setupPasswordToggle(inputId, toggleId) {
+        const input = document.getElementById(inputId);
+        const toggle = document.getElementById(toggleId);
+
+        if (!input || !toggle) return;
+
+        toggle.addEventListener("click", function () {
+            const icon = toggle.querySelector("i");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        });
+    }
+
+    setupPasswordToggle("password", "togglePassword");
+    setupPasswordToggle("password_confirmation", "togglePasswordConfirm");
+});
