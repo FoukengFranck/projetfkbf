@@ -177,3 +177,26 @@ document.addEventListener("DOMContentLoaded", function () {
     setupPasswordToggle("password", "togglePassword");
     setupPasswordToggle("password_confirmation", "togglePasswordConfirm");
 });
+
+document.getElementById("niu").addEventListener("input", function () {
+    let value = this.value.trim();
+    let error = document.getElementById("niu-error");
+
+    if (value.length === 14) {
+        let first = value.charAt(0).toUpperCase();
+        let rest = value.slice(1);
+
+        if (first === "M" && /^\d+$/.test(rest)) {
+            error.classList.add("hidden");
+        } else {
+            error.textContent =
+                "Le NIU est invalide. Il doit commencer par 'M' suivi de 13 chiffres.";
+
+            error.classList.remove("hidden");
+        }
+    } else {
+        error.textContent = "le NIU doit contenir exactement 14 caractères";
+
+        error.classList.remove("hidden");
+    }
+});

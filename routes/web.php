@@ -3,6 +3,13 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\CandidateRegistrationController;
 use App\Http\Controllers\Auth\EntrepriseRegistrationController;
+use App\Http\Controllers\Entreprise\DashboardController as EntrepriseDashboard;
+use App\Http\Controllers\Entreprise\ProfilController as EntrepriseProfil;
+use App\Http\Controllers\Entreprise\OffresController as EntrepriseOffres;
+use App\Http\Controllers\Entreprise\CandidaturesController as EntrepriseCandidatures;
+use App\Http\Controllers\Candidat\DashboardController as CandidatDashboard;
+use App\Http\Controllers\Candidat\ProfilController as CandidatProfil;
+use App\Http\Controllers\Candidat\CandidaturesController as CandidatCandidatures;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,4 +39,27 @@ Route::middleware('guest')->group(function () {
         ->name('register.entreprise.create');
     Route::post('/register/entreprise', [EntrepriseRegistrationController::class, 'store'])
         ->name('register.entreprise.store');
+});
+
+// Route::get('/', function () {
+//     return view('welcome-dashboards');
+// })->name('home');
+
+/*
+ | Routes Entreprise (sans auth pour test ; ajoute middleware('auth') plus tard)
+ */
+Route::prefix('entreprise')->name('entreprise.')->group(function () {
+    Route::get('/dashboard', [EntrepriseDashboard::class, 'index'])->name('dashboard');
+    Route::get('/profil',    [EntrepriseProfil::class, 'index'])->name('profil');
+    Route::get('/offres',    [EntrepriseOffres::class, 'index'])->name('offres');
+    Route::get('/candidatures',    [EntrepriseCandidatures::class, 'index'])->name('candidatures');
+});
+
+/*
+ | Routes Candidat
+ */
+Route::prefix('candidat')->name('candidat.')->group(function () {
+    Route::get('/dashboard',    [CandidatDashboard::class, 'index'])->name('dashboard');
+    Route::get('/profil',       [CandidatProfil::class, 'index'])->name('profil');
+    Route::get('/candidatures', [CandidatCandidatures::class, 'index'])->name('candidatures');
 });

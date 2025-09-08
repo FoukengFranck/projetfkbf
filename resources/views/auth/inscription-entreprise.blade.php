@@ -264,7 +264,7 @@
                             @error('identifiant_unique')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
-                            <p class="text-xs text-gray-500 mt-1">14 caractères alphanumériques</p>
+                            {{-- <p class="text-xs text-gray-500 mt-1">14 caractères alphanumériques</p> --}}
                             <p id="niu-error" class="text-red-500 text-sm hidden"></p>
                         </div>
 
