@@ -87,6 +87,6 @@ class EntrepriseRegistrationController extends Controller
             Auth::login($user);
         });
 
-        return redirect()->route('dashboard')->with('success','Compte entreprise créé.');
+        return redirect()->route('entreprise.dashboard')->with('success','Compte entreprise créé.');
     }
 }

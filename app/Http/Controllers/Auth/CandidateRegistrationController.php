@@ -79,6 +79,6 @@ class CandidateRegistrationController extends Controller
             Auth::login($user);
         });
 
-        return redirect()->route('dashboard')->with('success','Inscription candidat réussie.');
+        return redirect()->route('candidat.dashboard')->with('success','Inscription candidat réussie.');
     }
 }

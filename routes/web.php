@@ -11,21 +11,37 @@ use App\Http\Controllers\Candidat\DashboardController as CandidatDashboard;
 use App\Http\Controllers\Candidat\ProfilController as CandidatProfil;
 use App\Http\Controllers\Candidat\CandidaturesController as CandidatCandidatures;
 
+
+use App\Http\Controllers\OffreController;
+
+
+
+
+use App\Http\Controllers\DashboardController;
+
 Route::get('/', function () {
     return view('welcome');
 });
 
+
+Route::middleware(['auth'])->group(function () {
+    Route::post('/offres', [OffreController::class, 'store'])->name('offres.store');
+});
+
 Route::get('/decision', function () { return view('auth.decision'); })->middleware('guest')->name('decision');
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
+
+Route::middleware(['auth','verified'])->get('/dashboard', DashboardController::class)->name('dashboard');
+
+// Route::middleware([
+//     'auth:sanctum',
+//     config('jetstream.auth_session'),
+//     'verified',
+// ])->group(function () {
+//     Route::get('/dashboard', function () {
+//         return view('dashboard');
+//     })->name('dashboard');
+// });
 
 Route::middleware('guest')->group(function () {
     // Candidat
