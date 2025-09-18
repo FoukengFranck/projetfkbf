@@ -5,7 +5,8 @@
         <h2>FKBF kamerLink</h2>
     </div>
 
-    <button class="btn">accueil</button>
+    <a href="{{ route('home') }}" class="btn">Accueil</a>
+
 
 </header>
 

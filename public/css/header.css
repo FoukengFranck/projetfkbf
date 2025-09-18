@@ -33,6 +33,9 @@
     font-weight: 600;
     cursor: pointer;
     transition: background 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn:hover {

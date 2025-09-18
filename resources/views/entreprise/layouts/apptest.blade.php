@@ -16,10 +16,10 @@
     @include('entreprise.layouts.sidebar')
 
     {{-- Topbar fixe --}}
-    @include('entreprise.layouts.topbar')
+    {{-- @include('entreprise.layouts.topbar') --}}
 
     {{-- Contenu principal (placer un padding left et top pour éviter recouvrement) --}}
-    <main class="pl-64 pt-16 p-6">
+    <main class="pl-64  px-6">
         <div class="max-w-7xl mx-auto">
             @yield('content')
         </div>

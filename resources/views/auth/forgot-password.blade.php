@@ -1,4 +1,4 @@
-<x-guest-layout>
+{{-- <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
             <x-authentication-card-logo />
@@ -31,4 +31,37 @@
             </div>
         </form>
     </x-authentication-card>
+</x-guest-layout> --}}
+
+@include('components.header')
+<x-guest-layout>
+    <div class="bg-white border-solid shadow rounded-2xl justify-center min-h-[calc(100vh-80px)] py-[200px] px-[450px] m-4">
+        <h1 class="text-2xl font-bold mb-4 text-center text-blue-400">Rénitialisez votre Mot de passe</h1>
+
+        @if(session('success'))
+            <div class="text-green-600 mb-4">{{ session('success') }}</div>
+        @endif
+
+        @if($errors->any())
+            <div class="text-red-600 mb-4">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form action="{{ route('password.sendOtp') }}" method="POST">
+            @csrf
+            <div class="mb-5 w-full">
+                <x-label for="email" class="block mb-2 font-bold text-gray-700 text-center"
+                value="Entrez votre adresse email" />
+                <x-input id="email" type="email" name="email" required autofocus class="w-full py-2" />
+            </div>
+
+            <x-button class="w-[50%] mx-[25%] px-5 py-2 bg-blue-500  hover:bg-blue-400">Envoyer le code OTP</x-button>
+        </form>
+    </div>
 </x-guest-layout>
+

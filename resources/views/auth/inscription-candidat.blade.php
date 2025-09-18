@@ -1,145 +1,3 @@
-{{-- @include('components.header')
-<x-guest-layout>
-    <div class="mb-6 text-center">
-        <h1 class="text-2xl font-bold">Inscription Candidat</h1>
-        <p class="text-gray-600">Créez votre compte candidat</p>
-    </div>
-
-    @if ($errors->any())
-        <div class="mb-4 rounded border border-red-300 bg-red-50 p-3 text-red-700">
-            <ul class="list-disc pl-5">
-                @foreach ($errors->all() as $e)
-                    <li>{{ $e }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <form x-data="candidatForm()" x-init="init()" method="POST" action="{{ route('register.candidat.store') }}" enctype="multipart/form-data" class="space-y-6">
-        @csrf
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <label class="block text-sm font-medium">Nom complet <span class="text-red-500">*</span></label>
-                <input name="name" value="{{ old('name') }}" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-indigo-200" placeholder="Foulefack jacque william" required>
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium">Adresse Email <span class="text-red-500">*</span></label>
-                <input type="email" name="email" value="{{ old('email') }}" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-indigo-200" placeholder="foulefackjacque@gmail.com" required>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                    <label class="block text-sm font-medium">Numéro de Téléphone <span class="text-red-500">*</span></label>
-                    <input name="telephone" value="{{ old('telephone') }}" placeholder="+2376XXXXXXXX" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-indigo-200" required>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium">Ville <span class="text-red-500">*</span></label>
-                    <input name="ville" value="{{ old('ville') }}" class="mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring focus:ring-indigo-200" placeholder="Douala" required>
-                </div>
-            </div>
-
-         
-
-            
-            <div class="mt-4">
-                <label class="block text-sm font-medium">Compétences <span class="text-red-500">*</span></label>
-                <div class="flex gap-2">
-
-                    <input x-model="skillInput" @keydown.enter.prevent="addSkill()" placeholder="Ex: Développement Web" 
-                        class="mt-1 flex-1 rounded-md border-gray-300 shadow-sm focus:ring focus:ring-indigo-200">
-
-                    <button type="button" @click="addSkill()" 
-                        class="px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700">Ajouter</button>
-
-                </div>
-                <p class="text-xs text-gray-500 mt-1">Ajoutez chaque compétence puis cliquez sur “Ajouter”.</p>
-
-                <div class="mt-3 flex flex-wrap gap-2">
-                    <template x-for="(s, idx) in skills" :key="idx">
-                        <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full border">
-                            <span x-text="s"></span>
-                            <button type="button" @click="removeSkill(idx)" class="text-red-600 font-bold">&times;</button>
-                            <input type="hidden" name="competences[]" :value="s">
-                        </span>
-                    </template>
-                </div>
-            </div>
-
-            <div class="mt-4">
-                <label class="block text-sm font-medium">CV (PDF/Word) - optionnel</label>
-
-                <div id="cv-dropzone" class="border-2 border-dashed rounded-md p-8 text-center text-gray-500 cursor-pointer">
-                    Cliquez pour télécharger votre CV
-                </div>
-
-                <input type="file" name="cv" accept=".pdf,.doc,.docx" class="mt-1 w-full border rounded px-3 py-2">
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                    <label class="block text-sm font-medium">Niveau d'étude <span class="text-red-500">*</span></label>
-                    <select name="niveau_etude" class="mt-1 w-full border rounded px-3 py-2" required>
-                        <option value="">-- Sélectionnez --</option>
-                        @foreach (['CEP','BEPC','Probatoire','Baccalauréat','Licence','Master','Doctorat','Autre'] as $opt)
-                        <option value="{{ $opt }}" @selected(old('niveau_etude')===$opt)>{{ $opt }}</option>
-                        @endforeach
-                    </select>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium">Domaine d'activité <span class="text-red-500">*</span></label>
-                    <select name="domaine_activite" class="mt-1 w-full border rounded px-3 py-2" required>
-                        <option value="">-- Sélectionnez --</option>
-                        @foreach (['Informatique','Finance','Commerce','Logistique','Santé','Éducation','Ingénierie','Autre'] as $opt)
-                        <option value="{{ $opt }}" @selected(old('domaine_activite')===$opt)>{{ $opt }}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                <div>
-                    <label class="block text-sm font-medium">Mot de passe <span class="text-red-500">*</span></label>
-                    <input type="password" name="password" class="mt-1 w-full border rounded px-3 py-2" required>
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium">Confirmation du mot de passe <span class="text-red-500">*</span></label>
-                    <input type="password" name="password_confirmation" class="mt-1 w-full border rounded px-3 py-2" required>
-                </div>
-            </div>
-            
-        </div>
-
-        <div class="pt-2">
-            <button class="w-full bg-blue-600 text-white font-semibold py-2 rounded">Créer mon compte candidat</button>
-        </div>
-    </form>
-
-    <script>
-        function candidatForm() {
-            return {
-                skills: @json(old('competences', [])),
-                skillInput: '',
-                init(){},
-                addSkill(){
-                    const s = this.skillInput.trim();
-                    if(!s) return;
-                    if(this.skills.includes(s)) { this.skillInput=''; return; }
-                    this.skills.push(s);
-                    this.skillInput='';
-                },
-                removeSkill(i){
-                    this.skills.splice(i,1);
-                }
-            }
-        }
-    </script>
-</x-guest-layout> --}}
-
 @include('components.header')
 
 <x-guest-layout>
@@ -158,6 +16,12 @@
         <h1 class="text-3xl font-bold text-blue-700">Inscription Candidats / Freelance</h1>
         <p class="text-gray-600">Créez votre compte pour rejoindre la communauté professionnelle du Cameroun</p>
     </div>
+
+    @if (session('success'))
+        <div class="mb-4 rounded border border-green-300 bg-green-50 p-3 text-green-700">
+            {{ session('success') }}
+        </div>
+    @endif
 
     @if ($errors->any())
         <div class="mb-4 rounded border border-red-300 bg-red-50 p-3 text-red-700">
@@ -244,16 +108,6 @@
                 <p class="mt-2 text-sm text-gray-600" id="cv-filename"></p>
             </div>
 
-
-            {{-- <div class="mt-6">
-                <label class="block text-sm font-medium mb-1">CV</label>
-                <div id="cv-dropzone"
-                    class="border-2 border-dashed rounded-md p-10 text-center text-gray-500 cursor-pointer my-2">
-                    Cliquez pour télécharger votre CV
-                </div>
-                <input type="file" id="cv" name="cv" accept=".pdf,.doc,.docx" class="hidden">
-                <p class="mt-2 text-sm text-green-600 font-extrabold" id="cv-filename"></p>
-            </div> --}}
 
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">

@@ -21,7 +21,7 @@
                     <div class="w-5 h-5 flex items-center justify-center mr-3">
                         <span class="material-symbols-outlined">business_center</span>
                     </div>
-                     Emploi Publiés
+                     Offres Publiés
                 </div>
                
             </x-side-link>
