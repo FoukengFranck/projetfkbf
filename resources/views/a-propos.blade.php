@@ -61,10 +61,10 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button
-                        class="text-gray-600 hover:text-gray-900 whitespace-nowrap !rounded-button">Connexion</button>
-                    <button
-                        class="bg-primary text-white px-6 py-2 hover:bg-blue-600 whitespace-nowrap !rounded-button">S'inscrire</button>
+                    <a href="{{ route('login') }}"
+                        class="text-gray-600 hover:text-gray-900 whitespace-nowrap !rounded-button">Connexion</a>
+                    <a href="{{ route('decision') }}"
+                        class="bg-primary text-white px-6 py-2 hover:bg-blue-600 whitespace-nowrap !rounded-button">S'inscrire</a>
                 </div>
             </div>
         </nav>
