@@ -18,6 +18,8 @@ class Offre extends Model
         'start_date',
         'salary',
         'education_level',
+        'departement',  // Nouveau
+        'ville',        // Nouveau
         'description',
         'missions',
         'skills',
@@ -32,7 +34,7 @@ class Offre extends Model
 
     public function entreprise()
     {
-        return $this->belongsTo(Entreprise::class); //return $this->belongsTo(Entreprise:class);
+        return $this->belongsTo(Entreprise::class);
     }
 
     public function user()
@@ -40,4 +42,3 @@ class Offre extends Model
         return $this->belongsTo(User::class);
     }
 }
-

@@ -116,7 +116,7 @@ Route::prefix('entreprise')->name('entreprise.')->group(function () {
     Route::get('/candidatures',    [EntrepriseCandidatures::class, 'index'])->name('candidatures');
     Route::get('/chatbox',    [EntrepriseChatbox::class, 'index'])->name('chatbox');
     Route::get('/notifications',    [EntrepriseNotifications::class, 'index'])->name('notifications');
-    Route::get('/profil',    [EntrepriseProfil::class, 'index'])->name('profil');    
+    Route::get('/profil',    [EntrepriseProfil::class, 'index'])->name('profil');
 });
 
 /*
@@ -129,5 +129,13 @@ Route::prefix('candidat')->name('candidat.')->group(function () {
     Route::get('/chatbox', [CandidatChatbox::class, 'index'])->name('chatbox');
     Route::get('/notifications', [CandidatNotifications::class, 'index'])->name('notifications');
     Route::get('/profil',       [CandidatProfil::class, 'index'])->name('profil');
-    
+
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/offres', [App\Http\Controllers\OffreController::class, 'index'])->name('offres.index');
+    Route::post('/offres', [App\Http\Controllers\OffreController::class, 'store'])->name('offres.store');
+    Route::get('/offres/{id}', [App\Http\Controllers\OffreController::class, 'show'])->name('offres.show');
+    Route::put('/offres/{id}', [App\Http\Controllers\OffreController::class, 'update'])->name('offres.update');
+    Route::delete('/offres/{id}', [App\Http\Controllers\OffreController::class, 'destroy'])->name('offres.destroy');
 });
