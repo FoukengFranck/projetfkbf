@@ -1,6 +1,6 @@
 @extends('candidat.layouts.app')
 
-@section('title', 'Profil Candidat')
+@section('title', 'Offres d\'emplois')
 
 @section('content')
     <div class="flex-1 m-5">
@@ -366,9 +366,9 @@
         }
     </style>
 
-    {{-- <script>
+    <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const API_URL = "{{ route('candidat.offres.index') }}";
+            const API_URL = "{{ route('candidat.offres') }}"; // Corrigé pour matcher la route 'offres' (sans .index)
             const jobsGrid = document.getElementById('jobsGrid');
             const loading = document.createElement('div');
             loading.id = 'loading';
@@ -401,18 +401,13 @@
             };
             let savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
 
-            // Mappings ajustés d'après tes données DB (ex. 'infos' → 'informatique', 'Informatique' → 'informatique')
+            // Mappings UI → DB (basé sur tinker: "infos" → ?, mais LIKE gère partial; ajuste si besoin)
             const secteurMapping = {
                 'technologie': 'Informatique',
                 'finance': 'Finance',
                 'sante': 'Ressources Humaines',
                 'education': 'Design',
                 'commerce': 'Marketing'
-            };
-            // Ajout pour 'infos' (vu en DB)
-            const reverseSecteurMapping = {
-                'infos': 'informatique',
-                'informatique': 'informatique'
             };
 
             const contractMapping = {
@@ -447,9 +442,10 @@
                     });
                     const url = `${API_URL}?${params}`;
                     console.log('Debug: URL fetch:', url);
-                    const response = await fetch(url, { headers: { 'Accept': 'application/json' } });
+                    const response = await fetch(url, { headers: { 'Accept': 'application/json' }, credentials: 'same-origin' });
                     if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                        const errText = await response.text();
+                        throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errText}`);
                     }
                     const data = await response.json();
                     console.log('Debug: Data reçue:', data);
@@ -473,47 +469,35 @@
                     loading.classList.add('hidden');
                 } catch (error) {
                     console.error('Erreur fetch détaillée:', error);
-                    jobsGrid.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">Erreur de chargement. Vérifiez la console.</div>';
+                    jobsGrid.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">Erreur: ' + error.message + '. Vérifiez logs serveur.</div>';
                     loading.classList.add('hidden');
                 }
             }
 
             function createJobCard(offre) {
-                // Correction : nom_entreprise au lieu de nom (vu en tinker)
+                const secteur = (offre.departement || '').toLowerCase();
+                // Fix: nom_entreprise au lieu de nom
                 const nomEntreprise = offre.entreprise ? offre.entreprise.nom_entreprise || '' : '';
                 const initials = nomEntreprise ? nomEntreprise.substring(0, 2).toUpperCase() : '??';
                 const isSaved = savedJobs.includes(offre.id);
-                const daysAgo = Math.floor((new Date() - new Date(offre.created_at)) / (1000 * 60 * 60 * 24)) || 0;
-                // Skills : parse si string JSON
-                let skills = [];
-                if (offre.skills) {
-                    try {
-                        skills = typeof offre.skills === 'string' ? JSON.parse(offre.skills) : offre.skills;
-                    } catch (e) {
-                        console.warn('Skills parse error:', e);
-                    }
-                }
+                const daysAgo = Math.floor((new Date() - new Date(offre.created_at)) / (1000 * 60 * 60 * 24));
+                // Skills: array ou parse si string
+                let skills = Array.isArray(offre.skills) ? offre.skills : (offre.skills ? JSON.parse(offre.skills) : []);
                 const skillsHtml = skills.slice(0, 3).map(s => `<span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">${s}</span>`).join('') || '';
-
-                // Secteur pour couleur : ajusté pour tes données (ex. 'infos' ou null → default)
-                const secteurLower = (offre.departement || '').toLowerCase().trim();
-                let secteurKey = reverseSecteurMapping[secteurLower] || secteurLower;
-                if (!secteurKey || secteurKey === 'null') secteurKey = 'default';
 
                 const colorMap = {
                     'informatique': { bg: 'bg-blue-100', text: 'text-blue-600' },
+                    'infos': { bg: 'bg-blue-100', text: 'text-blue-600' }, // Pour "infos"
                     'finance': { bg: 'bg-green-100', text: 'text-green-600' },
                     'ressources humaines': { bg: 'bg-red-100', text: 'text-red-600' },
                     'design': { bg: 'bg-purple-100', text: 'text-purple-600' },
                     'marketing': { bg: 'bg-orange-100', text: 'text-orange-600' },
                     default: { bg: 'bg-indigo-100', text: 'text-indigo-600' }
                 };
-                const colors = colorMap[secteurKey] || colorMap.default;
+                const colors = colorMap[secteur] || colorMap.default;
 
                 const card = document.createElement('div');
-                card.className = `job-card bg-white rounded-xl shadow-sm border border-gray-200 p-6` +
-                    ` data-sector="${secteurLower}" data-contract="${(offre.contract_type || '').toLowerCase()}" ` +
-                    `data-location="${(offre.ville || '').toLowerCase()}" data-salary="${offre.salary || '0'}"`;
+                card.className = `job-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 data-sector="${secteur}" data-contract="${(offre.contract_type || '').toLowerCase()}" data-location="${(offre.ville || '').toLowerCase()}" data-salary="${offre.salary || '0'}"`;
                 card.innerHTML = `
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center space-x-3">
@@ -521,8 +505,8 @@
                                 <span class="text-lg font-bold ${colors.text}">${initials}</span>
                             </div>
                             <div>
-                                <h3 class="font-semibold text-gray-900">${offre.title || 'Titre non spécifié'}</h3>
-                                <p class="text-sm text-gray-600">${offre.entreprise ? offre.entreprise.nom_entreprise : 'Entreprise'}</p>
+                                <h3 class="font-semibold text-gray-900">${offre.title}</h3>
+                                <p class="text-sm text-gray-600">${nomEntreprise || 'Entreprise'}</p>
                             </div>
                         </div>
                         <button class="bookmark-btn p-2 ${isSaved ? 'text-red-500' : 'text-gray-400'} hover:text-red-500" data-id="${offre.id}">
@@ -551,7 +535,7 @@
                         ${skillsHtml}
                     </div>
                     <div class="flex items-center space-x-3">
-                        <button class="flex-1 bg-[#3B82F6] text-white py-2 px-4 rounded-[6px] text-sm font-medium hover:bg-blue-600 whitespace-nowrap" onclick="alert('Postuler à ${offre.id} (à implémenter)')">
+                        <button class="flex-1 bg-[#3B82F6] text-white py-2 px-4 rounded-[6px] text-sm font-medium hover:bg-blue-600 whitespace-nowrap">
                             Postuler maintenant
                         </button>
                         <span class="material-symbols-outlined">visibility</span>
@@ -586,7 +570,7 @@
                 fetchOffres({ page });
             };
 
-            // Dropdowns
+            // Dropdowns (inchangé, mais logs)
             const dropdowns = [
                 { button: 'sectorDropdown', menu: 'sectorMenu', textId: 'sectorText', param: 'departement', dataKey: 'sector', mapping: secteurMapping },
                 { button: 'contractDropdown', menu: 'contractMenu', textId: 'contractText', param: 'contract_type', dataKey: 'contract', mapping: contractMapping },
@@ -674,330 +658,16 @@
                 }
             });
 
-            // View toggle
+            // View toggle (basique)
             document.getElementById('gridView').addEventListener('click', () => {
                 jobsGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
-                document.getElementById('gridView').classList.add('text-[#3B82F6]', 'bg-blue-50');
-                document.getElementById('gridView').classList.remove('text-gray-400');
-                document.getElementById('listView').classList.remove('text-[#3B82F6]', 'bg-blue-50');
-                document.getElementById('listView').classList.add('text-gray-400');
             });
-
             document.getElementById('listView').addEventListener('click', () => {
                 jobsGrid.className = 'space-y-4';
-                document.getElementById('listView').classList.add('text-[#3B82F6]', 'bg-blue-50');
-                document.getElementById('listView').classList.remove('text-gray-400');
-                document.getElementById('gridView').classList.remove('text-[#3B82F6]', 'bg-blue-50');
-                document.getElementById('gridView').classList.add('text-gray-400');
             });
 
             // Initial load
             fetchOffres();
         });
-    </script> --}}
-
-    <script>
-document.addEventListener("DOMContentLoaded", function() {
-    const API_URL = "{{ route('candidat.offres.index') }}";
-    const jobsGrid = document.getElementById('jobsGrid');
-    const loading = document.createElement('div');
-    loading.id = 'loading';
-    loading.className = 'hidden text-center py-8 col-span-full';
-    loading.innerHTML = '<span class="material-symbols-outlined text-4xl text-blue-500 animate-spin">hourglass_empty</span><p class="mt-2 text-gray-600">Chargement...</p>';
-    jobsGrid.appendChild(loading);
-
-    const totalOffresEl = document.getElementById('totalOffres');
-    const nouvellesOffresEl = document.getElementById('nouvellesOffres');
-    const entreprisesCountEl = document.getElementById('entreprisesCount');
-    const sauvegardeesCountEl = document.getElementById('sauvegardeesCount');
-    const offresTrouveesEl = document.getElementById('offresTrouvees');
-    const paginationStartEl = document.getElementById('paginationStart');
-    const paginationEndEl = document.getElementById('paginationEnd');
-    const paginationTotalEl = document.getElementById('paginationTotal');
-    const paginationButtonsEl = document.getElementById('paginationButtons');
-    const salaryRangeEl = document.getElementById('salaryRange');
-    const salaryValueEl = document.getElementById('salaryValue');
-    const resetFiltersEl = document.getElementById('resetFilters');
-    const sortBtns = document.querySelectorAll('.sort-btn');
-
-    let currentFilters = {
-        page: 1,
-        sort: 'date',
-        search: '',
-        departement: '',
-        contract_type: '',
-        ville: '',
-        salary_min: ''
-    };
-    let savedJobs = JSON.parse(localStorage.getItem('savedJobs') || '[]');
-
-    // Mappings UI → DB (basé sur tinker: "infos" → ?, mais LIKE gère partial; ajuste si besoin)
-    const secteurMapping = {
-        'technologie': 'Informatique',
-        'finance': 'Finance',
-        'sante': 'Ressources Humaines',
-        'education': 'Design',
-        'commerce': 'Marketing'
-    };
-
-    const contractMapping = {
-        'cdi': 'CDI',
-        'cdd': 'CDD',
-        'stage': 'Stage',
-        'freelance': 'Indépendant'
-    };
-
-    const villeMapping = {
-        'yaounde': 'Yaoundé',
-        'douala': 'Douala',
-        'bafoussam': 'Bafoussam',
-        'bamenda': 'Bamenda'
-    };
-
-    function updateSavedCount() {
-        sauvegardeesCountEl.textContent = savedJobs.length;
-    }
-    updateSavedCount();
-
-    async function fetchOffres(filters = {}) {
-        console.log('Debug: Fetch avec filters:', filters);
-        loading.classList.remove('hidden');
-        jobsGrid.innerHTML = '';
-
-        try {
-            const params = new URLSearchParams({
-                ...currentFilters,
-                ...filters,
-                page: filters.page || currentFilters.page
-            });
-            const url = `${API_URL}?${params}`;
-            console.log('Debug: URL fetch:', url);
-            const response = await fetch(url, { headers: { 'Accept': 'application/json' }, credentials: 'same-origin' }); // Ajout credentials pour auth si besoin
-            if (!response.ok) {
-                const errText = await response.text();
-                throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errText}`);
-            }
-            const data = await response.json();
-            console.log('Debug: Data reçue:', data);
-
-            if (data.offres.length === 0) {
-                jobsGrid.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">Aucune offre trouvée. Vérifiez les filtres.</div>';
-            } else {
-                data.offres.forEach(offre => {
-                    const card = createJobCard(offre);
-                    jobsGrid.appendChild(card);
-                });
-            }
-
-            totalOffresEl.textContent = data.stats.total_offres || 0;
-            nouvellesOffresEl.textContent = data.stats.nouvelles_offres || 0;
-            entreprisesCountEl.textContent = data.stats.entreprises || 0;
-            offresTrouveesEl.textContent = `${data.pagination.total || 0} offres trouvées`;
-
-            renderPagination(data.pagination);
-
-            loading.classList.add('hidden');
-        } catch (error) {
-            console.error('Erreur fetch détaillée:', error);
-            jobsGrid.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">Erreur: ' + error.message + '. Vérifiez logs serveur.</div>';
-            loading.classList.add('hidden');
-        }
-    }
-
-    function createJobCard(offre) {
-        const secteur = (offre.departement || '').toLowerCase();
-        // Fix: nom_entreprise au lieu de nom
-        const nomEntreprise = offre.entreprise ? offre.entreprise.nom_entreprise || '' : '';
-        const initials = nomEntreprise ? nomEntreprise.substring(0, 2).toUpperCase() : '??';
-        const isSaved = savedJobs.includes(offre.id);
-        const daysAgo = Math.floor((new Date() - new Date(offre.created_at)) / (1000 * 60 * 60 * 24));
-        // Skills: array ou parse si string
-        let skills = Array.isArray(offre.skills) ? offre.skills : (offre.skills ? JSON.parse(offre.skills) : []);
-        const skillsHtml = skills.slice(0, 3).map(s => `<span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">${s}</span>`).join('') || '';
-
-        const colorMap = {
-            'informatique': { bg: 'bg-blue-100', text: 'text-blue-600' },
-            'infos': { bg: 'bg-blue-100', text: 'text-blue-600' }, // Pour "infos"
-            'finance': { bg: 'bg-green-100', text: 'text-green-600' },
-            'ressources humaines': { bg: 'bg-red-100', text: 'text-red-600' },
-            'design': { bg: 'bg-purple-100', text: 'text-purple-600' },
-            'marketing': { bg: 'bg-orange-100', text: 'text-orange-600' },
-            default: { bg: 'bg-indigo-100', text: 'text-indigo-600' }
-        };
-        const colors = colorMap[secteur] || colorMap.default;
-
-        const card = document.createElement('div');
-        card.className = `job-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 data-sector="${secteur}" data-contract="${(offre.contract_type || '').toLowerCase()}" data-location="${(offre.ville || '').toLowerCase()}" data-salary="${offre.salary || '0'}"`;
-        card.innerHTML = `
-            <div class="flex items-start justify-between mb-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center">
-                        <span class="text-lg font-bold ${colors.text}">${initials}</span>
-                    </div>
-                    <div>
-                        <h3 class="font-semibold text-gray-900">${offre.title}</h3>
-                        <p class="text-sm text-gray-600">${nomEntreprise || 'Entreprise'}</p>
-                    </div>
-                </div>
-                <button class="bookmark-btn p-2 ${isSaved ? 'text-red-500' : 'text-gray-400'} hover:text-red-500" data-id="${offre.id}">
-                    <span class="material-symbols-outlined">bookmark</span>
-                </button>
-            </div>
-            <div class="space-y-3 mb-4">
-                <div class="flex items-center space-x-2 text-sm text-gray-600">
-                    <span class="material-symbols-outlined">location_on</span>
-                    <span>${offre.ville || 'Cameroun'}</span>
-                </div>
-                <div class="flex items-center space-x-2 text-sm text-gray-600">
-                    <span class="material-symbols-outlined">business_center</span>
-                    <span>${offre.contract_type || 'Non spécifié'} • Temps plein</span>
-                </div>
-                <div class="flex items-center space-x-2 text-sm text-gray-600">
-                    <span class="material-symbols-outlined">euro</span>
-                    <span>${offre.salary || 'Non spécifié'}</span>
-                </div>
-                <div class="flex items-center space-x-2 text-sm text-gray-600">
-                    <span class="material-symbols-outlined">schedule</span>
-                    <span>Publié il y a ${daysAgo} ${daysAgo === 1 ? 'jour' : 'jours'}</span>
-                </div>
-            </div>
-            <div class="flex flex-wrap gap-2 mb-4">
-                ${skillsHtml}
-            </div>
-            <div class="flex items-center space-x-3">
-                <button class="flex-1 bg-[#3B82F6] text-white py-2 px-4 rounded-[6px] text-sm font-medium hover:bg-blue-600 whitespace-nowrap">
-                    Postuler maintenant
-                </button>
-                <span class="material-symbols-outlined">visibility</span>
-            </div>
-        `;
-        return card;
-    }
-
-    function renderPagination(pag) {
-        paginationStartEl.textContent = ((pag.current_page - 1) * pag.per_page) + 1;
-        paginationEndEl.textContent = Math.min(pag.current_page * pag.per_page, pag.total);
-        paginationTotalEl.textContent = pag.total;
-
-        let buttonsHtml = `
-            <button class="px-3 py-2 border border-gray-300 rounded-lg text-gray-500 hover:bg-gray-50 disabled:opacity-50" ${pag.current_page === 1 ? 'disabled' : ''} onclick="changePage(${pag.current_page - 1})">
-                <span class="material-symbols-outlined">chevron_left</span>
-            </button>
-            <button class="px-3 py-2 bg-[#3B82F6] text-white rounded-lg" onclick="changePage(${pag.current_page})">${pag.current_page}</button>
-        `;
-        if (pag.last_page > 1 && pag.current_page < pag.last_page) {
-            buttonsHtml += `
-                <button class="px-3 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50" onclick="changePage(${pag.current_page + 1})">
-                    <span class="material-symbols-outlined">chevron_right</span>
-                </button>
-            `;
-        }
-        paginationButtonsEl.innerHTML = buttonsHtml;
-    }
-
-    window.changePage = function(page) {
-        currentFilters.page = page;
-        fetchOffres({ page });
-    };
-
-    // Dropdowns (inchangé, mais logs)
-    const dropdowns = [
-        { button: 'sectorDropdown', menu: 'sectorMenu', textId: 'sectorText', param: 'departement', dataKey: 'sector', mapping: secteurMapping },
-        { button: 'contractDropdown', menu: 'contractMenu', textId: 'contractText', param: 'contract_type', dataKey: 'contract', mapping: contractMapping },
-        { button: 'locationDropdown', menu: 'locationMenu', textId: 'locationText', param: 'ville', dataKey: 'location', mapping: villeMapping }
-    ];
-
-    dropdowns.forEach(d => {
-        const buttonEl = document.getElementById(d.button);
-        const menuEl = document.getElementById(d.menu);
-        const textEl = document.getElementById(d.textId);
-
-        buttonEl.addEventListener('click', () => menuEl.classList.toggle('show'));
-
-        menuEl.querySelectorAll('button').forEach(option => {
-            option.addEventListener('click', () => {
-                const displayText = option.textContent.trim();
-                const dataValue = option.dataset[d.dataKey];
-                let dbValue = dataValue === 'all' ? '' : (d.mapping ? d.mapping[dataValue] : dataValue);
-                textEl.textContent = displayText;
-                currentFilters[d.param] = dbValue;
-                console.log(`Debug: Filtre ${d.param} = ${dbValue}`);
-                currentFilters.page = 1;
-                fetchOffres();
-                menuEl.classList.remove('show');
-            });
-        });
-    });
-
-    document.addEventListener('click', e => {
-        if (!e.target.closest('.relative')) {
-            document.querySelectorAll('.dropdown-menu').forEach(m => m.classList.remove('show'));
-        }
-    });
-
-    // Salary
-    salaryRangeEl.addEventListener('input', (e) => {
-        const value = parseInt(e.target.value);
-        salaryValueEl.textContent = value.toLocaleString() + ' FCFA';
-        currentFilters.salary_min = value > 0 ? value : '';
-        currentFilters.page = 1;
-        fetchOffres();
-    });
-
-    // Reset
-    resetFiltersEl.addEventListener('click', () => {
-        currentFilters = { page: 1, sort: 'date', search: '', departement: '', contract_type: '', ville: '', salary_min: '' };
-        salaryRangeEl.value = 0;
-        salaryValueEl.textContent = '0 FCFA';
-        document.getElementById('sectorText').textContent = 'Tous les secteurs';
-        document.getElementById('contractText').textContent = 'Tous les contrats';
-        document.getElementById('locationText').textContent = 'Toutes les villes';
-        sortBtns.forEach(b => b.classList.remove('bg-[#3B82F6]', 'text-white'));
-        sortBtns[0].classList.add('bg-[#3B82F6]', 'text-white');
-        fetchOffres();
-    });
-
-    // Sort
-    sortBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            sortBtns.forEach(b => b.classList.remove('bg-[#3B82F6]', 'text-white'));
-            btn.classList.add('bg-[#3B82F6]', 'text-white');
-            currentFilters.sort = btn.dataset.sort;
-            currentFilters.page = 1;
-            fetchOffres();
-        });
-    });
-
-    // Bookmark
-    jobsGrid.addEventListener('click', e => {
-        if (e.target.closest('.bookmark-btn')) {
-            const btn = e.target.closest('.bookmark-btn');
-            const id = parseInt(btn.dataset.id);
-            const index = savedJobs.indexOf(id);
-            if (index > -1) {
-                savedJobs.splice(index, 1);
-                btn.classList.remove('text-red-500');
-                btn.classList.add('text-gray-400');
-            } else {
-                savedJobs.push(id);
-                btn.classList.add('text-red-500');
-                btn.classList.remove('text-gray-400');
-            }
-            localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
-            updateSavedCount();
-        }
-    });
-
-    // View toggle (basique)
-    document.getElementById('gridView').addEventListener('click', () => {
-        jobsGrid.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6';
-    });
-    document.getElementById('listView').addEventListener('click', () => {
-        jobsGrid.className = 'space-y-4';
-    });
-
-    // Initial load
-    fetchOffres();
-});
-</script>
+    </script>
 @endsection

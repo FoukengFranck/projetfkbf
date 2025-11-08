@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('candidats', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->string('telephone');           
+            $table->string('telephone');
             $table->string('ville');
-            $table->json('competences');           
-            $table->string('cv_path')->nullable(); 
+            $table->json('competences');
+            $table->string('cv_path')->nullable();
             $table->string('niveau_etude');
             $table->string('domaine_activite');
             $table->timestamps();
