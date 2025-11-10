@@ -368,12 +368,14 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            const API_URL = "{{ route('candidat.offres') }}"; // Corrigé pour matcher la route 'offres' (sans .index)
+            const API_URL =
+            "{{ route('candidat.offres') }}"; // Corrigé pour matcher la route 'offres' (sans .index)
             const jobsGrid = document.getElementById('jobsGrid');
             const loading = document.createElement('div');
             loading.id = 'loading';
             loading.className = 'hidden text-center py-8 col-span-full';
-            loading.innerHTML = '<span class="material-symbols-outlined text-4xl text-blue-500 animate-spin">hourglass_empty</span><p class="mt-2 text-gray-600">Chargement...</p>';
+            loading.innerHTML =
+                '<span class="material-symbols-outlined text-4xl text-blue-500 animate-spin">hourglass_empty</span><p class="mt-2 text-gray-600">Chargement...</p>';
             jobsGrid.appendChild(loading);
 
             const totalOffresEl = document.getElementById('totalOffres');
@@ -442,7 +444,12 @@
                     });
                     const url = `${API_URL}?${params}`;
                     console.log('Debug: URL fetch:', url);
-                    const response = await fetch(url, { headers: { 'Accept': 'application/json' }, credentials: 'same-origin' });
+                    const response = await fetch(url, {
+                        headers: {
+                            'Accept': 'application/json'
+                        },
+                        credentials: 'same-origin'
+                    });
                     if (!response.ok) {
                         const errText = await response.text();
                         throw new Error(`HTTP ${response.status}: ${response.statusText} - ${errText}`);
@@ -451,7 +458,8 @@
                     console.log('Debug: Data reçue:', data);
 
                     if (data.offres.length === 0) {
-                        jobsGrid.innerHTML = '<div class="col-span-full text-center py-8 text-gray-500">Aucune offre trouvée. Vérifiez les filtres.</div>';
+                        jobsGrid.innerHTML =
+                            '<div class="col-span-full text-center py-8 text-gray-500">Aucune offre trouvée. Vérifiez les filtres.</div>';
                     } else {
                         data.offres.forEach(offre => {
                             const card = createJobCard(offre);
@@ -469,7 +477,8 @@
                     loading.classList.add('hidden');
                 } catch (error) {
                     console.error('Erreur fetch détaillée:', error);
-                    jobsGrid.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">Erreur: ' + error.message + '. Vérifiez logs serveur.</div>';
+                    jobsGrid.innerHTML = '<div class="col-span-full text-center py-8 text-red-500">Erreur: ' +
+                        error.message + '. Vérifiez logs serveur.</div>';
                     loading.classList.add('hidden');
                 }
             }
@@ -482,22 +491,47 @@
                 const isSaved = savedJobs.includes(offre.id);
                 const daysAgo = Math.floor((new Date() - new Date(offre.created_at)) / (1000 * 60 * 60 * 24));
                 // Skills: array ou parse si string
-                let skills = Array.isArray(offre.skills) ? offre.skills : (offre.skills ? JSON.parse(offre.skills) : []);
-                const skillsHtml = skills.slice(0, 3).map(s => `<span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">${s}</span>`).join('') || '';
+                let skills = Array.isArray(offre.skills) ? offre.skills : (offre.skills ? JSON.parse(offre.skills) :
+                    []);
+                const skillsHtml = skills.slice(0, 3).map(s =>
+                    `<span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">${s}</span>`).join(
+                    '') || '';
 
                 const colorMap = {
-                    'informatique': { bg: 'bg-blue-100', text: 'text-blue-600' },
-                    'infos': { bg: 'bg-blue-100', text: 'text-blue-600' }, // Pour "infos"
-                    'finance': { bg: 'bg-green-100', text: 'text-green-600' },
-                    'ressources humaines': { bg: 'bg-red-100', text: 'text-red-600' },
-                    'design': { bg: 'bg-purple-100', text: 'text-purple-600' },
-                    'marketing': { bg: 'bg-orange-100', text: 'text-orange-600' },
-                    default: { bg: 'bg-indigo-100', text: 'text-indigo-600' }
+                    'informatique': {
+                        bg: 'bg-blue-100',
+                        text: 'text-blue-600'
+                    },
+                    'infos': {
+                        bg: 'bg-blue-100',
+                        text: 'text-blue-600'
+                    }, // Pour "infos"
+                    'finance': {
+                        bg: 'bg-green-100',
+                        text: 'text-green-600'
+                    },
+                    'ressources humaines': {
+                        bg: 'bg-red-100',
+                        text: 'text-red-600'
+                    },
+                    'design': {
+                        bg: 'bg-purple-100',
+                        text: 'text-purple-600'
+                    },
+                    'marketing': {
+                        bg: 'bg-orange-100',
+                        text: 'text-orange-600'
+                    },
+                    default: {
+                        bg: 'bg-indigo-100',
+                        text: 'text-indigo-600'
+                    }
                 };
                 const colors = colorMap[secteur] || colorMap.default;
 
                 const card = document.createElement('div');
-                card.className = `job-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 data-sector="${secteur}" data-contract="${(offre.contract_type || '').toLowerCase()}" data-location="${(offre.ville || '').toLowerCase()}" data-salary="${offre.salary || '0'}"`;
+                card.className =
+                    `job-card bg-white rounded-xl shadow-sm border border-gray-200 p-6 data-sector="${secteur}" data-contract="${(offre.contract_type || '').toLowerCase()}" data-location="${(offre.ville || '').toLowerCase()}" data-salary="${offre.salary || '0'}"`;
                 card.innerHTML = `
                     <div class="flex items-start justify-between mb-4">
                         <div class="flex items-center space-x-3">
@@ -535,11 +569,16 @@
                         ${skillsHtml}
                     </div>
                     <div class="flex items-center space-x-3">
-                        <button class="flex-1 bg-[#3B82F6] text-white py-2 px-4 rounded-[6px] text-sm font-medium hover:bg-blue-600 whitespace-nowrap">
-                            Postuler maintenant
-                        </button>
-                        <span class="material-symbols-outlined">visibility</span>
-                    </div>
+    <button onclick="openCandidatureModal(${offre.id}, '${offre.title}')"
+            class="flex-1 bg-[#3B82F6] text-white py-2 px-4 rounded-[6px] text-sm font-medium hover:bg-blue-600 whitespace-nowrap">
+        Postuler maintenant
+    </button>
+    <button onclick="viewOffreDetails(${offre.id})"
+            class="p-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+            title="Voir les détails">
+        <span class="material-symbols-outlined">visibility</span>
+    </button>
+</div>
                 `;
                 return card;
             }
@@ -567,14 +606,36 @@
 
             window.changePage = function(page) {
                 currentFilters.page = page;
-                fetchOffres({ page });
+                fetchOffres({
+                    page
+                });
             };
 
             // Dropdowns (inchangé, mais logs)
-            const dropdowns = [
-                { button: 'sectorDropdown', menu: 'sectorMenu', textId: 'sectorText', param: 'departement', dataKey: 'sector', mapping: secteurMapping },
-                { button: 'contractDropdown', menu: 'contractMenu', textId: 'contractText', param: 'contract_type', dataKey: 'contract', mapping: contractMapping },
-                { button: 'locationDropdown', menu: 'locationMenu', textId: 'locationText', param: 'ville', dataKey: 'location', mapping: villeMapping }
+            const dropdowns = [{
+                    button: 'sectorDropdown',
+                    menu: 'sectorMenu',
+                    textId: 'sectorText',
+                    param: 'departement',
+                    dataKey: 'sector',
+                    mapping: secteurMapping
+                },
+                {
+                    button: 'contractDropdown',
+                    menu: 'contractMenu',
+                    textId: 'contractText',
+                    param: 'contract_type',
+                    dataKey: 'contract',
+                    mapping: contractMapping
+                },
+                {
+                    button: 'locationDropdown',
+                    menu: 'locationMenu',
+                    textId: 'locationText',
+                    param: 'ville',
+                    dataKey: 'location',
+                    mapping: villeMapping
+                }
             ];
 
             dropdowns.forEach(d => {
@@ -588,7 +649,8 @@
                     option.addEventListener('click', () => {
                         const displayText = option.textContent.trim();
                         const dataValue = option.dataset[d.dataKey];
-                        let dbValue = dataValue === 'all' ? '' : (d.mapping ? d.mapping[dataValue] : dataValue);
+                        let dbValue = dataValue === 'all' ? '' : (d.mapping ? d.mapping[
+                            dataValue] : dataValue);
                         textEl.textContent = displayText;
                         currentFilters[d.param] = dbValue;
                         console.log(`Debug: Filtre ${d.param} = ${dbValue}`);
@@ -616,7 +678,15 @@
 
             // Reset
             resetFiltersEl.addEventListener('click', () => {
-                currentFilters = { page: 1, sort: 'date', search: '', departement: '', contract_type: '', ville: '', salary_min: '' };
+                currentFilters = {
+                    page: 1,
+                    sort: 'date',
+                    search: '',
+                    departement: '',
+                    contract_type: '',
+                    ville: '',
+                    salary_min: ''
+                };
                 salaryRangeEl.value = 0;
                 salaryValueEl.textContent = '0 FCFA';
                 document.getElementById('sectorText').textContent = 'Tous les secteurs';
@@ -670,4 +740,6 @@
             fetchOffres();
         });
     </script>
+
+    @include('candidat.partials.candidature-modal')
 @endsection

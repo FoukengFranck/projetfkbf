@@ -8,6 +8,9 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
   <title>@yield('title', 'Dashboard Candidat')</title>
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.0/dist/trix.css">
+  <script type="text/javascript" src="https://unpkg.com/trix@2.0.0/dist/trix.umd.min.js"></script>
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   @vite(['resources/css/app.css','resources/js/app.js'])
 </head>
 <body class="min-h-screen bg-gray-50">

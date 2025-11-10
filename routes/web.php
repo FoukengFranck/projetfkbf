@@ -109,6 +109,9 @@ Route::prefix('entreprise')->name('entreprise.')->group(function () {
     Route::get('/dashboard', [EntrepriseDashboard::class, 'index'])->name('dashboard');
     Route::get('/offres',    [EntrepriseOffres::class, 'index'])->name('offres');
     Route::get('/candidatures',    [EntrepriseCandidatures::class, 'index'])->name('candidatures');
+    Route::patch('/candidatures/{id}/statut', [EntrepriseCandidatures::class, 'updateStatut'])->name('candidatures.updateStatut');
+    Route::get('/candidatures/{id}', [EntrepriseCandidatures::class, 'show'])->name('candidatures.show');
+    Route::get('/candidatures',    [EntrepriseCandidatures::class, 'index'])->name('candidatures');
     Route::get('/chatbox',    [EntrepriseChatbox::class, 'index'])->name('chatbox');
     Route::get('/notifications',    [EntrepriseNotifications::class, 'index'])->name('notifications');
     Route::get('/profil',    [EntrepriseProfil::class, 'index'])->name('profil');
@@ -121,6 +124,11 @@ Route::prefix('candidat')->name('candidat.')->group(function () {
     Route::get('/dashboard',    [CandidatDashboard::class, 'index'])->name('dashboard');
     // Route corrigée : nom changé en 'offres' pour matcher les liens existants (ex. dans sidebar)
     Route::get('/offres', [CandidatOffreController::class, 'index'])->name('offres');
+    Route::get('/candidatures', [CandidatCandidatures::class, 'index'])->name('candidatures');
+    Route::get('/candidatures/{id}', [CandidatureController::class, 'showDetails'])->name('candidat.candidatures.details');
+    Route::get('/candidatures/{id}', [CandidatCandidatures::class, 'show'])->name('candidatures.show');
+    Route::post('/candidatures', [CandidatCandidatures::class, 'store'])->name('candidatures.store');
+    Route::delete('/candidatures/{id}', [CandidatCandidatures::class, 'destroy'])->name('candidatures.destroy');
     Route::get('/candidatures', [CandidatCandidatures::class, 'index'])->name('candidatures');
     Route::get('/chatbox', [CandidatChatbox::class, 'index'])->name('chatbox');
     Route::get('/notifications', [CandidatNotifications::class, 'index'])->name('notifications');
